@@ -1,0 +1,26 @@
+{
+    "reserve": [
+        {"username": "13921884011",
+        "password": "20021129xu",
+        "time": ["08:00","19:00"],
+        "roomid":"9782",
+        "seatid":["360"],
+        "daysofweek": ["Monday" , "Tuesday", "Wednesday", "Thursday", "Friday"]
+    },
+    {"username": "13921884011",
+    "password": "20021129xu",
+    "time": ["08:00","19:00"],
+    "roomid":"9782",
+    "seatid":["360"],
+    "daysofweek": ["Monday" , "Tuesday", "Wednesday", "Thursday", "Friday"]
+},
+        {"username": "18936381635",
+        "password": "wyywyy..189",
+        "time": ["08:00","19:00"],
+        "roomid":"9783",
+        "seatid":["542"],
+        "daysofweek": ["Monday" , "Tuesday", "Wednesday", "Thursday", "Friday"]
+    }
+
+    ]
+}
