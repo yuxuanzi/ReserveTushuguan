@@ -30,4 +30,4 @@ jobs:
           USERNAMES: ${{ secrets.USERNAMES }}
           PASSWORDS: ${{ secrets.PASSWORDS }}
         run: |
-          python main.py
+          python main.py  debug --action
