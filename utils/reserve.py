@@ -197,18 +197,20 @@ class reserve:
         return tl[0]
 
     def submit(self, times, roomid, seatid, action):
+        suc = False  # 初始成功标志
         for seat in seatid:
-            suc = False
-            while ~suc and self.max_attempt > 0:
+            attempts = 0  # 每个座位的尝试次数
+            while not suc and attempts < self.max_attempt:
                 token = self._get_page_token(self.url.format(roomid, seat))
                 logging.info(f"Get token: {token}")
                 captcha = self.resolve_captcha() if self.enable_slider else "" 
                 logging.info(f"Captcha token {captcha}")
-                suc = self.get_submit(self.submit_url, times=times,token=token, roomid=roomid, seatid=seat, captcha=captcha, action=action)
+                suc = self.get_submit(self.submit_url, times=times, token=token, roomid=roomid, seatid=seat, captcha=captcha, action=action)
                 if suc:
                     return suc
-                time.sleep(self.sleep_time)
-                self.max_attempt -= 1
+                attempts += 1  # 增加尝试次数
+                time.sleep(self.sleep_time)  # 等待指定时间
+        
         return suc
 
     def get_submit(self, url, times, token, roomid, seatid, captcha="", action=False):
