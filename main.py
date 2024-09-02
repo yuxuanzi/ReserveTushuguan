@@ -23,26 +23,47 @@ RESERVE_NEXT_DAY = True # 预约后天而不是今天的
 
 def login_and_reserve(users, usernames, passwords, action, success_list=None):
     logging.info(f"Global settings: \nSLEEPTIME: {SLEEPTIME}\nENDTIME: {ENDTIME}\nENABLE_SLIDER: {ENABLE_SLIDER}\nRESERVE_NEXT_DAY: {RESERVE_NEXT_DAY}")
+    # 检查用户数量与配置是否匹配
     if action and len(usernames.split(",")) != len(users):
         raise Exception("user number should match the number of config")
+    # 初始化成功列表和尝试次数列表
     if success_list is None:
         success_list = [False] * len(users)
+    attempt_counts = [0] * len(users)  # 新增尝试次数列表
     current_dayofweek = get_current_dayofweek(action)
-    for index, user in enumerate(users):
-        username, password, times, roomid, seatid, daysofweek = user.values()
-        if action:
-            username, password = usernames.split(',')[index], passwords.split(',')[index]
-        if(current_dayofweek not in daysofweek):
-            logging.info("Today not set to reserve")
-            continue
-        if not success_list[index]: 
+    # 循环直到所有用户都成功或者达到结束时间
+    while True:
+        for index, user in enumerate(users):
+            username, password, times, roomid, seatid, daysofweek = user.values()
+            if action:
+                username, password = usernames.split(',')[index], passwords.split(',')[index]
+            if (current_dayofweek not in daysofweek) or success_list[index]:
+                continue  # 跳过今天不预约的用户或已成功的用户
+            
+            # 记录尝试的用户
             logging.info(f"----------- {username} -- {times} -- {seatid} try -----------")
             s = reserve(sleep_time=SLEEPTIME, max_attempt=MAX_ATTEMPT, enable_slider=ENABLE_SLIDER, reserve_next_day=RESERVE_NEXT_DAY)
             s.get_login_status()
             s.login(username, password)
             s.requests.headers.update({'Host': 'office.chaoxing.com'})
+            
+            # 提交预约
             suc = s.submit(times, roomid, seatid, action)
             success_list[index] = suc
+            
+            # 更新尝试次数
+            attempt_counts[index] += 1
+            
+            # 达到最大尝试次数，检查是否需要重试
+            if not suc and attempt_counts[index] >= MAX_ATTEMPT:
+                logging.info(f"{username} has reached the maximum attempts and will retry.")
+                attempt_counts[index] = 0  # 清空尝试次数
+
+        current_time = get_current_time(action)
+        
+        # 检查是否到达结束时间
+        if current_time >= ENDTIME and all(success_list):
+            break  # 如果所有用户都成功，退出循环
     return success_list
 
 
