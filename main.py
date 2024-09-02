@@ -101,28 +101,43 @@ def main(users, action=False):
 
 def debug(users, action=False):
     logging.info(f"Global settings: \nSLEEPTIME: {SLEEPTIME}\nENDTIME: {ENDTIME}\nENABLE_SLIDER: {ENABLE_SLIDER}\nRESERVE_NEXT_DAY: {RESERVE_NEXT_DAY}")
-    suc = False
-    logging.info(f" Debug Mode start! , action {'on' if action else 'off'}")
+    logging.info(f"Debug Mode start! Action {'on' if action else 'off'}")
+
     if action:
         usernames, passwords = get_user_credentials(action)
+        
     current_dayofweek = get_current_dayofweek(action)
-    for index, user in enumerate(users):
-        username, password, times, roomid, seatid, daysofweek = user.values()
-        if type(seatid) == str:
-            seatid = [seatid]
-        if action:
-            username ,password = usernames.split(',')[index], passwords.split(',')[index]
-        if(current_dayofweek not in daysofweek):
-            logging.info("Today not set to reserve")
-            continue
-        logging.info(f"----------- {username} -- {times} -- {seatid} try -----------")
-        s = reserve(sleep_time=SLEEPTIME,  max_attempt=MAX_ATTEMPT, enable_slider=ENABLE_SLIDER)
-        s.get_login_status()
-        s.login(username, password)
-        s.requests.headers.update({'Host': 'office.chaoxing.com'})
-        suc = s.submit(times, roomid, seatid, action)
-        if suc:
-            return
+    while True:  # 无限循环直到达到时间限制
+        any_success = False  # 记录此次迭代是否有成功预约
+        for index, user in enumerate(users):
+            username, password, times, roomid, seatid, daysofweek = user.values()
+            
+            if action:
+                username, password = usernames.split(',')[index], passwords.split(',')[index]
+                
+            if current_dayofweek not in daysofweek:
+                logging.info("Today not set to reserve")
+                continue
+
+            logging.info(f"----------- {username} -- {times} -- {seatid} try -----------")
+            s = reserve(sleep_time=SLEEPTIME, max_attempt=MAX_ATTEMPT, enable_slider=ENABLE_SLIDER)
+            s.get_login_status()
+            s.login(username, password)
+            s.requests.headers.update({'Host': 'office.chaoxing.com'})
+            suc = s.submit(times, roomid, seatid, action)
+            if suc:
+                any_success = True
+
+            # 检查当前时间是否超出 ENDTIME
+            current_time = get_current_time(action)  # 需要在此处获取当前时间
+            if current_time >= ENDTIME:
+                logging.info("Reached end time, stopping attempts.")
+                return
+
+        if not any_success:  # 如果没有用户成功预约
+            logging.info("No successful reservations made. Retrying...")
+            time.sleep(SLEEPTIME)  # 等待一段时间再重试
+    
 
 def get_roomid(args1, args2):
     username = input("请输入用户名：")
