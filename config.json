@@ -1,6 +1,6 @@
 {
     "reserve": [
-        {"username": "XXXXXXXXXXX", //https://passport2.chaoxing.com/mlogin?loginType=1&newversion=true&fid=&  在这个网站查看是否可以顺利登陆 
+        {"username": "XXXXXXXXXXX", 
         "password": "XXXXXXXXXX",
         "time": ["08:00","08:30"], // 预约的起始时间
         "roomid":"9782", //9782:大自习室一楼， 9783大自习室二楼
