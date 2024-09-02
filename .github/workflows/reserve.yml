@@ -26,5 +26,8 @@ jobs:
           pip install cryptography requests opencv-python
 
       - name: run script
+        env:
+          USERNAMES: ${{ secrets.USERNAMES }}
+          PASSWORDS: ${{ secrets.PASSWORDS }}
         run: |
           python main.py -m debug --action
