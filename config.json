@@ -2,14 +2,14 @@
     "reserve": [
         {"username": "XXXXXXXX", //https://passport2.chaoxing.com/mlogin?loginType=1&newversion=true&fid=&  在这个网站查看是否可以顺利登陆 
         "password": "XXXXXXXX",
-        "time": ["08:00","19:00"], // 预约的起始时间
-        "roomid":"9782", //2609:四楼外圈,5483:四楼内圈,2610:五楼外圈,5484:五楼内圈
+        "time": ["08:00","08:30"], // 预约的起始时间
+        "roomid":"9782", //9782:大自习室一楼， 9783大自习室二楼
         "seatid":"360", // 注意要用0补全至3位数，例如6号座位应该填006
         "daysofweek": ["Monday" , "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
         },
         {"username": "xxxxxxxxxx",
         "password": "xxxxxxxxx",
-        "time": ["08:00","19:00"],
+        "time": ["08:00","08:30"],
         "roomid":"9782",
         "seatid":["361"],
         "daysofweek": ["Monday" , "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
