@@ -2,9 +2,9 @@
     "reserve": [
         {"username": "XXXXXXXXXXX", 
         "password": "XXXXXXXXXX",
-        "time": ["08:00","08:30"], // 预约的起始时间
-        "roomid":"9782", //9782:大自习室一楼， 9783大自习室二楼
-        "seatid":"360", // 注意要用0补全至3位数，例如6号座位应该填006
+        "time": ["08:00","08:30"], 
+        "roomid":"9782", 
+        "seatid":"360", 
         "daysofweek": ["Monday" , "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
         },
         {"username": "xxxxxxxxxxxxx",
