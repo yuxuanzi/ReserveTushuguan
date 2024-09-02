@@ -53,20 +53,30 @@ def main(users, action=False):
     usernames, passwords = None, None
     if action:
         usernames, passwords = get_user_credentials(action)
-    success_list = None
+    success_list = [False] * len(users)
     current_dayofweek = get_current_dayofweek(action)
-    today_reservation_num = sum(1 for d in users if current_dayofweek in d.get('daysofweek'))
+    # today_reservation_num = sum(1 for d in users if current_dayofweek in d.get('daysofweek'))
     while current_time < ENDTIME:
         attempt_times += 1
         # try:
         success_list = login_and_reserve(users, usernames, passwords, action, success_list)
+        # 检查哪些用户没有预约成功
+        failed_users = [users[i] for i in range(len(users)) if not success_list[i]]
         # except Exception as e:
         #     print(f"An error occurred: {e}")
         print(f"attempt time {attempt_times}, time now {current_time}, success list {success_list}")
-        current_time = get_current_time(action)
-        if sum(success_list) == today_reservation_num:
-            print(f"reserved successfully!")
+        if not failed_users:  # 如果没有失败的用户，结束循环
+            print("All reservations are successful!")
             return
+        
+        if not failed_users:  # 如果所有用户成功预约，结束
+            print("All users have successfully reserved!")
+            return
+          
+        current_time = get_current_time(action)
+        # if sum(success_list) == today_reservation_num:
+        #     print(f"reserved successfully!")
+        #     return
 
 def debug(users, action=False):
     logging.info(f"Global settings: \nSLEEPTIME: {SLEEPTIME}\nENDTIME: {ENDTIME}\nENABLE_SLIDER: {ENABLE_SLIDER}\nRESERVE_NEXT_DAY: {RESERVE_NEXT_DAY}")
